@@ -1,0 +1,102 @@
+body {
+    background-color: #181818;
+    color: #D0D0D0;
+    font-family: "Courier New", monospace;
+    margin: 0;
+    padding: 20px;
+    line-height: 1.5;
+}
+
+h1 {
+    color: #A0C8F0;
+    text-align: left;
+    font-size: 1.8em;
+}
+
+textarea {
+    background-color: #282828;
+    color: #D0D0D0;
+    border: 1px solid #505050;
+    padding: 10px;
+    width: calc(100% - 22px);
+    height: 200px;
+    font-family: "Courier New", monospace;
+    font-size: 14px;
+    resize: vertical;
+}
+
+button {
+    background-color: #282828;
+    color: #D0D0D0;
+    border: 1px solid #505050;
+    padding: 8px 15px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #484848;
+}
+
+#waveform {
+    position: fixed;
+    bottom: 10px;
+    left: 10px;
+    width: calc(100% - 22px);
+    max-width: 600px;
+    height: 200px;
+    border: 1px solid #505050;
+    box-sizing: border-box;
+}
+
+@media (max-width: 600px) {
+    #waveform {
+        width: calc(100% - 22px);
+        left: 10px;
+    }
+
+    textarea {
+        width: calc(100% - 22px);
+    }
+}
+
+.controls {
+    margin-top: 20px;
+}
+
+.controls label {
+    display: inline-block;
+    margin-right: 10px;
+}
+
+.controls input[type="range"] {
+    width: 200px;
+    vertical-align: middle;
+}
+
+.controls input[type="number"] {
+    width: 60px;
+    vertical-align: middle;
+    background-color: #282828;
+    color: #D0D0D0;
+    border: 1px solid #505050;
+    padding: 5px;
+    font-family: monospace;
+}
+.controls {
+    margin-top: 20px;
+}
+
+.controls button,
+.controls label,
+.controls input {
+    margin-right: 10px;
+}
+
+.controls input[type="range"] {
+    vertical-align: middle;
+}
+
+.controls input[type="number"] {
+    width: 60px;
+}
