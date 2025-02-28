@@ -21,6 +21,7 @@
         let dataArray;
         let canvas = document.getElementById("waveform");
         let ctx = canvas.getContext("2d");
+        let currentID = null;
 
         function generateID() {
             return Math.random().toString(36).substr(2, 9);
@@ -29,9 +30,13 @@
         function updateURL() {
             const input = document.getElementById("wavString").value;
             if (input.trim() === "") return;
-            const id = generateID();
-            localStorage.setItem("wavCode_" + id, input);
-            history.replaceState(null, "", "?id=" + id);
+            
+            if (!currentID || !localStorage.getItem("wavCode_" + currentID)) {
+                currentID = generateID();
+            }
+            
+            localStorage.setItem("wavCode_" + currentID, input);
+            history.replaceState(null, "", "?id=" + currentID);
         }
 
         function loadFromURL() {
@@ -41,6 +46,7 @@
                 const storedCode = localStorage.getItem("wavCode_" + id);
                 if (storedCode) {
                     document.getElementById("wavString").value = storedCode;
+                    currentID = id;
                 }
             }
         }
