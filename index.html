@@ -4,10 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>WAV String Player</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/lz-string/1.4.4/lz-string.min.js"></script>
-</head>
-<body>
+    <link rel="stylesheet" href="style.css">
     <h1>WAV String Player</h1>
     <textarea id="wavString" placeholder="Вставьте строковый код WAV..." oninput="updateURL()"></textarea>
     <br>
@@ -26,6 +23,6 @@
         <input type="range" id="visualizerSize" value="200" min="100" max="400" step="10">
     </div>
     <canvas id="waveform"></canvas>
-    <script src="{{ url_for('static', filename='script.js') }}"></script>
+    <script href="script.js">
 </body>
 </html>
