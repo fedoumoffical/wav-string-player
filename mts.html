@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MP3 to String Converter</title>
+</head>
+<body>
+    <h1>MP3 to String Converter</h1>
+    
+    <input type="file" id="mp3Input" accept="audio/mp3">
+    <button onclick="convertMP3()">Конвертировать</button>
+    <button onclick="saveToFile()">Сохранить в .txt</button>
+    
+    <textarea id="mp3StringOutput" style="width: 100%; height: 200px;" placeholder="Здесь появится String код..."></textarea>
+
+    <script>
+        function convertMP3() {
+            const fileInput = document.getElementById("mp3Input").files[0];
+            if (!fileInput) {
+                alert("Выберите MP3-файл!");
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.readAsArrayBuffer(fileInput);
+
+            reader.onload = function () {
+                const buffer = reader.result;
+                const bytes = new Uint8Array(buffer);
+                let binary = "";
+                
+                for (let i = 0; i < bytes.length; i++) {
+                    binary += String.fromCharCode(bytes[i]);
+                }
+
+                const base64String = btoa(binary);
+                document.getElementById("mp3StringOutput").value = base64String;
+            };
+
+            reader.onerror = function () {
+                alert("Ошибка при чтении файла!");
+            };
+        }
+
+        function saveToFile() {
+            const text = document.getElementById("mp3StringOutput").value;
+            if (!text) {
+                alert("Сначала конвертируйте файл!");
+                return;
+            }
+
+            const blob = new Blob([text], { type: "text/plain" });
+            const a = document.createElement("a");
+            a.href = URL.createObjectURL(blob);
+            a.download = "mp3_string.txt";
+            a.click();
+        }
+    </script>
+</body>
+</html>
