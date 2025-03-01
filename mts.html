@@ -10,6 +10,7 @@
     
     <input type="file" id="mp3Input" accept="audio/mp3">
     <button onclick="convertMP3()">Конвертировать</button>
+    <button onclick="copyToClipboard()">Копировать</button>
     <button onclick="saveToFile()">Сохранить в .txt</button>
     
     <textarea id="mp3StringOutput" style="width: 100%; height: 200px;" placeholder="Здесь появится String код..."></textarea>
@@ -41,6 +42,18 @@
             reader.onerror = function () {
                 alert("Ошибка при чтении файла!");
             };
+        }
+
+        function copyToClipboard() {
+            const textArea = document.getElementById("mp3StringOutput");
+            if (!textArea.value) {
+                alert("Сначала конвертируйте файл!");
+                return;
+            }
+
+            textArea.select();
+            document.execCommand("copy");
+            alert("Скопировано в буфер обмена!");
         }
 
         function saveToFile() {
