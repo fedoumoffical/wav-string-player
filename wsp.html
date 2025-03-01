@@ -4,51 +4,76 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>WAV String Player</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lz-string/1.4.4/lz-string.min.js"></script>
 </head>
 <body>
-    <h1>WAV String Player</h1>
-    
+    <h1 style="text-align: left;">WAV String Player</h1>
     <textarea id="wavString" style="width: 80%; height: 200px;" placeholder="Вставьте строковый код WAV..."></textarea>
     <br>
-    
     <button onclick="playAudio()">Играть</button>
     <button onclick="stopAudio()">Стоп</button>
-    <button onclick="clearInput()">Очистить</button>  <!-- Новая кнопка -->
+    
+    <canvas id="waveform" width="600" height="200" style="position: fixed; bottom: 10px; left: 10px;"></canvas>
     
     <script>
-        function playAudio() {
-            const wavString = document.getElementById("wavString").value;
-            if (!wavString) {
-                alert("Введите строковый код!");
-                return;
-            }
-            
+        let audioContext;
+        let analyser;
+        let dataArray;
+        let canvas = document.getElementById("waveform");
+        let ctx = canvas.getContext("2d");
+
+        async function playAudio() {
+            const wavString = document.getElementById('wavString').value;
             const binaryData = atob(wavString);
             const byteArray = new Uint8Array(binaryData.length);
             for (let i = 0; i < binaryData.length; i++) {
                 byteArray[i] = binaryData.charCodeAt(i);
             }
 
-            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-            audioContext.decodeAudioData(byteArray.buffer, (buffer) => {
-                const source = audioContext.createBufferSource();
-                source.buffer = buffer;
-                source.connect(audioContext.destination);
-                source.start();
-            }, (error) => {
-                alert("Ошибка декодирования аудио!");
-                console.error(error);
-            });
-        }
+            if (!audioContext) {
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                analyser = audioContext.createAnalyser();
+                analyser.fftSize = 2048;
+                dataArray = new Uint8Array(analyser.frequencyBinCount);
+            }
 
-        function stopAudio() {
-            if (audioContext) {
-                audioContext.suspend();
+            try {
+                const audioBuffer = await audioContext.decodeAudioData(byteArray.buffer);
+                const audioBufferSource = audioContext.createBufferSource();
+                audioBufferSource.buffer = audioBuffer;
+                audioBufferSource.connect(analyser);
+                analyser.connect(audioContext.destination);
+                audioBufferSource.start();
+                visualizeFrequency();
+            } catch (error) {
+                alert('Ошибка декодирования аудио');
+                console.error(error);
             }
         }
 
-        function clearInput() {
-            document.getElementById("wavString").value = "";
+        function stopAudio() {
+    if (audioContext) {
+        audioContext.close();
+        audioContext = null; // Обнуляем, чтобы потом создать новый
+    }
+}
+
+        function visualizeFrequency() {
+            requestAnimationFrame(visualizeFrequency);
+            analyser.getByteFrequencyData(dataArray);
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = 'black';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            let barWidth = (canvas.width / dataArray.length) * 2.5;
+            let barHeight;
+            let x = 0;
+
+            for (let i = 0; i < dataArray.length; i++) {
+                barHeight = dataArray[i];
+                ctx.fillStyle = 'rgb(' + (barHeight + 100) + ',50,50)';
+                ctx.fillRect(x, canvas.height - barHeight / 2, barWidth, barHeight / 2);
+                x += barWidth + 1;
+            }
         }
     </script>
 </body>
